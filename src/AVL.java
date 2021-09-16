@@ -29,6 +29,21 @@ public class AVL<T extends Comparable<? super T>> {
      */
     public void updateHeightAndBF(AVLNode<T> currentNode) {
         // WRITE YOUR CODE HERE (DO NOT MODIFY METHOD HEADER)!
+        int leftHeight;
+        if(currentNode.getLeft() == null)
+            leftHeight = -1;
+        else
+            leftHeight = currentNode.getLeft().getHeight();
+
+        int rightHeight;
+        if(currentNode.getRight() == null)
+            rightHeight = -1;
+        else
+            rightHeight = currentNode.getRight().getHeight();
+
+
+        currentNode.setHeight(Math.max(leftHeight, rightHeight) + 1);
+        currentNode.setBalanceFactor(leftHeight - rightHeight);
     }
 
     /**
@@ -54,6 +69,23 @@ public class AVL<T extends Comparable<? super T>> {
      */
     public AVLNode<T> rotateLeft(AVLNode<T> currentNode) {
         // WRITE YOUR CODE HERE (DO NOT MODIFY METHOD HEADER)!
+        /**
+         * 1. Node B is Node A's right child
+         * 2. Node A's right child becomes Node B's left child
+         * 3. Node A becomes Node B's left child
+         * 4. Update height and BF of A
+         * 5. Update height and BF of B
+         * 6. Return B
+         */
+        if(currentNode.getRight() != null){
+            AVLNode<T> nodeB = currentNode.getRight();
+            currentNode.setRight(currentNode.getRight().getLeft());
+            nodeB.setLeft(currentNode);
+
+        }
+
+
+
     }
 
     /**

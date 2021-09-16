@@ -16,8 +16,6 @@ public class AVLNode<T extends Comparable<? super T>> {
 
     /**
      * Create an AVLNode with the given data.
-     *
-     * @param data The data stored in the new node.
      */
     public AVLNode(T data) {
         this.data = data;
@@ -25,8 +23,6 @@ public class AVLNode<T extends Comparable<? super T>> {
 
     /**
      * Gets the data.
-     *
-     * @return The data.
      */
     public T getData() {
         return data;
@@ -34,8 +30,6 @@ public class AVLNode<T extends Comparable<? super T>> {
 
     /**
      * Gets the left child.
-     *
-     * @return The left child.
      */
     public AVLNode<T> getLeft() {
         return left;
@@ -43,8 +37,6 @@ public class AVLNode<T extends Comparable<? super T>> {
 
     /**
      * Gets the right child.
-     *
-     * @return The right child.
      */
     public AVLNode<T> getRight() {
         return right;
@@ -52,17 +44,13 @@ public class AVLNode<T extends Comparable<? super T>> {
 
     /**
      * Gets the height.
-     *
-     * @return The height.
-     */
+    */
     public int getHeight() {
         return height;
     }
 
     /**
      * Gets the balance factor.
-     *
-     * @return The balance factor.
      */
     public int getBalanceFactor() {
         return balanceFactor;
@@ -70,8 +58,6 @@ public class AVLNode<T extends Comparable<? super T>> {
 
     /**
      * Sets the data.
-     *
-     * @param data The new data.
      */
     public void setData(T data) {
         this.data = data;
@@ -79,8 +65,6 @@ public class AVLNode<T extends Comparable<? super T>> {
 
     /**
      * Sets the left child.
-     *
-     * @param left The new left child.
      */
     public void setLeft(AVLNode<T> left) {
         this.left = left;
@@ -88,8 +72,6 @@ public class AVLNode<T extends Comparable<? super T>> {
 
     /**
      * Sets the right child.
-     *
-     * @param right The new right child.
      */
     public void setRight(AVLNode<T> right) {
         this.right = right;
@@ -97,8 +79,6 @@ public class AVLNode<T extends Comparable<? super T>> {
 
     /**
      * Sets the height.
-     *
-     * @param height The new height.
      */
     public void setHeight(int height) {
         this.height = height;
@@ -106,8 +86,6 @@ public class AVLNode<T extends Comparable<? super T>> {
 
     /**
      * Sets the balance factor.
-     *
-     * @param balanceFactor The new balance factor.
      */
     public void setBalanceFactor(int balanceFactor) {
         this.balanceFactor = balanceFactor;
