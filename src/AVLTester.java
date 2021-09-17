@@ -20,6 +20,7 @@ public class AVLTester {
         node4.setLeft(node3);
 
         AVL<Integer> misty = new AVL<>();
+        /*
         misty.add(2);
         misty.add(0);
         misty.add(1);
@@ -32,7 +33,12 @@ public class AVLTester {
         System.out.println(misty.preorder(misty.getRoot()));
 
         misty.remove(3);
-        System.out.println(misty.preorder(misty.getRoot()));
 
+         */
+        misty.add(0);
+
+        System.out.println(misty.preorder(misty.getRoot()));
+        misty.remove(0);
+        System.out.println(misty.preorder(misty.getRoot()));
     }
 }

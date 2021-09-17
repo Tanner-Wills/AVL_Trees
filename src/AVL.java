@@ -90,104 +90,75 @@ public class AVL<T extends Comparable<? super T>> {
      * @throws java.lang.IllegalArgumentException If the data is null.
      * @throws java.util.NoSuchElementException   If the data is not found.
      */
-    // Wrapper Method
     public T remove(T data) {
-        if(data == null){
-            throw new IllegalArgumentException("Can't remove null data from the Tree!");
-        } else {
-            AVLNode<T> removeNode = null;
-            rRemove(root, data, removeNode);
-        }
-        return data;
+        // WRITE YOUR CODE HERE (DO NOT MODIFY METHOD HEADER)!
+        if (data == null)
+            throw new IllegalArgumentException();
+        AVLNode<T> dummy = new AVLNode<>(null);
+        root = innerRemove(data,root,dummy);
+        return dummy.getData();
     }
 
-    // Main Method
-    private AVLNode<T> rRemove(AVLNode<T> curr, T data, AVLNode<T> removeNode){
-        /**
-         * traverse down the tree looking for the specified data.
-         * Case 1: data not found -> do nothing. Print "Data not in Tree!"
-         * Case 2: data is a leaf node -> simply remove it
-         * Case 3: data has one child -> grandparent.setNext(child)
-         * Case 4: data has two children -> replace the node using the successor method. Need a successor helper method.
-         */
+    private AVLNode<T> innerRemove(T data, AVLNode<T> currNode,AVLNode<T> dummy){
+        // Base Case - Data Not Found
+        if (currNode == null)
+            throw new NoSuchElementException();
 
-        // Case 1: data not found
-        if (curr == null) {
-
-            // Base case: curr == data
-        } else if(curr.getData().equals(data)){
-
-            // Case 2: if data is a leaf
-            if(curr.getRight() == null && curr.getLeft() == null)
+        int compVal = currNode.getData().compareTo(data);
+        // Base Case - Data Found
+        if (compVal == 0){
+            // Save data to dummy node to return & decrement size
+            dummy.setData(currNode.getData());
+            size--;
+            // No child case
+            if (currNode.getLeft() == null && currNode.getRight() == null) {
                 return null;
-
-            // Case 3: if data has one child
-            else if (curr.getLeft() == null && curr.getRight() != null)
-                return curr.getRight();
-
-            else if (curr.getRight() == null && curr.getLeft() != null)
-                return curr.getLeft();
-
-            // Case 4: if data has two children. Replace node using successor helper method.
-            else if (curr.getRight() != null && curr.getLeft() != null) {
-
-                curr.setData(successValue(curr.getRight()));
-
-                //save right side tree
-                AVLNode<T> rightNode = successor(curr.getRight());
-
-                //save left side tree
-                AVLNode<T> leftNode = curr.getLeft();
-                curr.setLeft(leftNode);
-                curr.setRight(rightNode);
             }
-            size --;
-            return curr;
-
-            // continue to traverse through tree
-        } else if (curr.getData().compareTo(data) > 0){
-            curr.setLeft(rRemove(curr.getLeft(), data, removeNode));
-
-        } else if (curr.getData().compareTo(data) < 0){
-            curr.setRight(rRemove(curr.getRight(), data, removeNode));
+            // Left Child
+            else if (currNode.getLeft() != null && currNode.getRight() == null){
+                return currNode.getLeft();
+            }
+            // Right Child
+            else if (currNode.getLeft() == null && currNode.getRight() != null){
+                return currNode.getRight();
+            }
+            // 2 Child
+            else {
+                AVLNode<T> dummy2 = new AVLNode<>(null);
+                currNode.setRight(successor(currNode.getRight(),dummy2));
+                currNode.setData(dummy2.getData());
+                updateHeightAndBF(currNode);
+            }
         }
-
-        if(curr != null) {
-            updateHeightAndBF(curr);
-            curr = balance(curr);
+        // Recursive Find
+        else if (compVal > 0){
+            currNode.setLeft(innerRemove(data,currNode.getLeft(),dummy));
+            updateHeightAndBF(currNode);
         }
-        return curr;
+        else {
+            currNode.setRight(innerRemove(data,currNode.getRight(),dummy));
+            updateHeightAndBF(currNode);
+        }
+        if (currNode.getBalanceFactor() > 1 || currNode.getBalanceFactor() < -1){
+            currNode = balance(currNode);
+        }
+        return currNode;
     }
 
-    // Helper method for getting the new tree after removing the successor node.
-    private AVLNode<T> successor(AVLNode<T> curr){
-        //traverse left until null is reached.
-        //base case
-        if(curr.getLeft() == null){
-
-            // Case 1: if successor node is a leaf
-            if(curr.getRight() == null)
-                curr = null;
-                // Case 2: successor has a child node
-            else
-                curr = curr.getRight();
-
-        } else
-            curr.setLeft(successor(curr.getLeft()));
-
-            if(curr != null) {
-                updateHeightAndBF(curr);
-                curr = balance(curr);
-            }
-        return curr;
-    }
-
-    // Helper method for getting value of successor node
-    private T successValue(AVLNode<T> curr) {
-        while(curr.getLeft() != null)
-            curr = curr.getLeft();
-
-        return curr.getData();
+    private AVLNode<T> successor(AVLNode<T> currNode, AVLNode<T> dummy2){
+        // Base Case - Found Successor
+        if (currNode.getLeft() == null){
+            dummy2.setData(currNode.getData());
+            return  currNode.getRight();
+        }
+        // Recurse
+        else {
+            currNode.setLeft(successor(currNode.getLeft(),dummy2));
+            updateHeightAndBF(currNode);
+            if (Math.abs(currNode.getBalanceFactor()) > 1)
+                currNode = balance(currNode);
+            return currNode;
+        }
     }
 
     /**
@@ -346,7 +317,7 @@ public class AVL<T extends Comparable<? super T>> {
     /**
      * Pre Order Traversal
      */
-    private List<T> preorder(AVLNode<T> root) {
+    public List<T> preorder(AVLNode<T> root) {
         // C,L,R
 
         List<T> returnVals = new ArrayList<T>();
