@@ -12,18 +12,26 @@ public class AVLTester {
         AVLNode<Integer> node8 = new AVLNode<>(8);
         AVLNode<Integer> node9 = new AVLNode<>(9);
 
+        node2.setLeft(node0);
+        node0.setRight(node1);
+        node2.setRight(node4);
+        node4.setRight(node6);
+        node6.setRight(node5);
+        node4.setLeft(node3);
+
         AVL<Integer> misty = new AVL<>();
         misty.add(2);
         misty.add(0);
         misty.add(1);
-        misty.add(7);
-        misty.add(8);
         misty.add(4);
         misty.add(3);
         misty.add(6);
+        misty.add(5);
+
+
         System.out.println(misty.preorder(misty.getRoot()));
 
-        misty.add(5);
+        misty.remove(3);
         System.out.println(misty.preorder(misty.getRoot()));
 
     }
