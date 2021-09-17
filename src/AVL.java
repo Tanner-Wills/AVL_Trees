@@ -28,7 +28,6 @@ public class AVL<T extends Comparable<? super T>> {
      * @param currentNode The node to update the height and balance factor of.
      */
     public void updateHeightAndBF(AVLNode<T> currentNode) {
-        // WRITE YOUR CODE HERE (DO NOT MODIFY METHOD HEADER)!
         int leftHeight;
         if(currentNode.getLeft() == null)
             leftHeight = -1;
@@ -52,23 +51,9 @@ public class AVL<T extends Comparable<? super T>> {
      * become the current node's right subtree. The current node will become
      * the right node's left subtree.
      *
-     * Don't forget to recalculate the height and balance factor of all
-     * affected nodes, using updateHeightAndBF().
-     *
-     * This method should run in O(1).
-     *
-     * You may assume that the passed in node is not null and that the subtree
-     * starting at that node is right heavy. Therefore, you do not need to
-     * perform any preliminary checks, rather, you can immediately perform a
-     * left rotation on the passed in node and return the new root of the subtree.
-     *
      * This method should only be called in balance().
-     *
-     * @param currentNode The current node under inspection that will rotate.
-     * @return The parent of the node passed in (after the rotation).
-     */
+    */
     public AVLNode<T> rotateLeft(AVLNode<T> currentNode) {
-        // WRITE YOUR CODE HERE (DO NOT MODIFY METHOD HEADER)!
         /**
          * 1. Node B is Node A's right child
          * 2. Node A's right child becomes Node B's left child
@@ -77,15 +62,12 @@ public class AVL<T extends Comparable<? super T>> {
          * 5. Update height and BF of B
          * 6. Return B
          */
-        if(currentNode.getRight() != null){
-            AVLNode<T> nodeB = currentNode.getRight();
-            currentNode.setRight(currentNode.getRight().getLeft());
-            nodeB.setLeft(currentNode);
-
-        }
-
-
-
+        AVLNode<T> nodeB = currentNode.getRight();
+        currentNode.setRight(currentNode.getRight().getLeft());
+        nodeB.setLeft(currentNode);
+        updateHeightAndBF(currentNode);
+        updateHeightAndBF(nodeB);
+        return nodeB;
     }
 
     /**
@@ -94,23 +76,23 @@ public class AVL<T extends Comparable<? super T>> {
      * become the current node's left subtree. The current node will become
      * the left node's right subtree.
      *
-     * Don't forget to recalculate the height and balance factor of all
-     * affected nodes, using updateHeightAndBF().
-     *
-     * This method should run in O(1).
-     *
-     * You may assume that the passed in node is not null and that the subtree
-     * starting at that node is left heavy. Therefore, you do not need to perform
-     * any preliminary checks, rather, you can immediately perform a right
-     * rotation on the passed in node and return the new root of the subtree.
-     *
-     * This method should only be called in balance().
-     *
-     * @param currentNode The current node under inspection that will rotate.
-     * @return The parent of the node passed in (after the rotation).
+    `* This method should only be called in balance().
      */
     public AVLNode<T> rotateRight(AVLNode<T> currentNode) {
-        // WRITE YOUR CODE HERE (DO NOT MODIFY METHOD HEADER)!
+        /**
+         * 1. Node B is Node C's right child
+         * 2. Node C's right child becomes Node B's right child
+         * 3. Node C becomes Node B's right child
+         * 4. Update height and BF of C
+         * 5. Update height and BF of B
+         * 6. Return B
+         */
+        AVLNode<T> nodeB = currentNode.getLeft();
+        currentNode.setLeft(currentNode.getLeft().getRight());
+        nodeB.setRight(currentNode);
+        updateHeightAndBF(currentNode);
+        updateHeightAndBF(nodeB);
+        return nodeB;
     }
 
     /**
@@ -134,18 +116,17 @@ public class AVL<T extends Comparable<? super T>> {
      * @return The AVLNode that the caller should return.
      */
     public AVLNode<T> balance(AVLNode<T> currentNode) {
-        // WRITE YOUR CODE HERE (DO NOT MODIFY METHOD HEADER)!
 
         /* First, we update the height and balance factor of the current node. */
         updateHeightAndBF(currentNode);
 
-        if ( /* Condition for a right heavy tree. */ ) {
-            if ( /* Condition for a right-left rotation. */ ) {
+        if (currentNode.getBalanceFactor() <= -2 ) {
+            if ( currentNode.getRight().getBalanceFactor() >= 1 ) {
                 currentNode.setRight(rotateRight(currentNode.getRight()));
             }
             currentNode = rotateLeft(currentNode);
-        } else if ( /* Condition for a left heavy tree. */ ) {
-            if ( /* Condition for a left-right rotation. */ ) {
+        } else if ( currentNode.getBalanceFactor() >= 2 ) {
+            if ( currentNode.getLeft().getBalanceFactor() <= -1 ) {
                 currentNode.setLeft(rotateLeft(currentNode.getLeft()));
             }
             currentNode = rotateRight(currentNode);
