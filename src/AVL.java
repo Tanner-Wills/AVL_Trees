@@ -1,3 +1,7 @@
+import java.util.ArrayList;
+import java.util.List;
+import java.util.NoSuchElementException;
+
 /**
  * Your implementation of the AVL tree rotations.
  */
@@ -6,6 +10,153 @@ public class AVL<T extends Comparable<? super T>> {
     /**
      * DO NOT ADD ANY GLOBAL VARIABLES!
      */
+    private AVLNode<T> root;
+    private int size;
+
+
+    /**
+     * Adds the element to the tree.
+     *
+     * Start by adding it as a leaf like in a regular BST and then rotate the
+     * tree as necessary.
+     *
+     * If the data is already in the tree, then nothing should be done (the
+     * duplicate shouldn't get added, and size should not be incremented).
+     *
+     * Remember to recalculate heights and balance factors while going back
+     * up the tree after adding the element, making sure to rebalance if
+     * necessary. This is as simple as calling the balance() method on the
+     * current node, before returning it (assuming that your balance method
+     * is written correctly from part 1 of this assignment).
+     *
+     * @param data The data to add.
+     * @throws java.lang.IllegalArgumentException If data is null.
+     */
+    /**
+     * Adds the data to the tree.
+     *
+     * Should be O(log n) for best and average cases and O(n) for worst case.
+     */
+    public void add(T data) {
+        if(data == null){
+            throw new IllegalArgumentException("Can't add null data to the Tree!");
+        } else {
+            root = rAdd(root, data);
+        }
+    }
+
+    private AVLNode<T> rAdd(AVLNode<T> curr, T data){
+        if(curr == null){
+            size ++;
+            curr = new AVLNode<>(data);
+
+        } else if (curr.getData().compareTo(data) > 0){
+            curr.setLeft(rAdd(curr.getLeft(), data));
+
+        } else if (curr.getData().compareTo(data) < 0){
+            curr.setRight(rAdd(curr.getRight(), data));
+        }
+        updateHeightAndBF(curr);
+        curr = balance(curr);
+        return curr;
+    }
+
+    /**
+     * Removes and returns the element from the tree matching the given
+     * parameter.
+     *
+     * There are 3 cases to consider:
+     * 1: The node containing the data is a leaf (no children). In this case,
+     *    simply remove it.
+     * 2: The node containing the data has one child. In this case, simply
+     *    replace it with its child.
+     * 3: The node containing the data has 2 children. Use the successor to
+     *    replace the data, NOT predecessor. As a reminder, rotations can occur
+     *    after removing the successor node.
+     *
+     * Remember to recalculate heights and balance factors while going back
+     * up the tree after removing the element, making sure to rebalance if
+     * necessary. This is as simple as calling the balance() method on the
+     * current node, before returning it (assuming that your balance method
+     * is written correctly from part 1 of this assignment).
+     *
+     * Do NOT return the same data that was passed in. Return the data that
+     * was stored in the tree.
+     *
+     * Hint: Should you use value equality or reference equality?
+     *
+     * @param data The data to remove.
+     * @return The data that was removed.
+     * @throws java.lang.IllegalArgumentException If the data is null.
+     * @throws java.util.NoSuchElementException   If the data is not found.
+     */
+    public T remove(T data) {
+        if(data == null)
+            throw new IllegalArgumentException();
+        else
+            return removeNode(root, data);
+    }
+
+    private T removeNode(AVLNode<T> curr, T data) {
+        if (curr == null)
+            throw new IllegalArgumentException();
+        else {
+            //data not found
+            if (curr == null)
+                throw new NoSuchElementException();
+            else {
+                if (curr.getData().compareTo(data) > 0)
+                    removeNode(curr.getRight(), data);
+
+                else if (curr.getData().compareTo(data) < 0)
+                    removeNode(curr.getLeft(), data);
+
+                //Data found
+                else if (curr.getData().compareTo(data) == 0) {
+
+                    // Case 1: data is a leaf
+                    if (curr.getLeft() == null && curr.getRight() == null)
+                        curr = null;
+
+                    // Case 3: if data has 2 children
+                    else if (curr.getRight() != null && curr.getLeft() != null) {
+                        // Successor method
+                        AVLNode<T> leftBranch = curr.getLeft();
+                        AVLNode<T> rightBranch = curr.getRight();
+                        curr = successor(curr.getRight());
+                        curr.setLeft(leftBranch);
+                        curr.setRight(rightBranch);
+
+
+
+                    }
+                    // Case 2: data has 1 child
+                    else if (curr.getRight() != null) {
+                        if (curr.getLeft() == null) {
+                            curr.setData(curr.getRight().getData());
+                            curr.setRight(null);
+                        }
+                    } else if (curr.getLeft() != null) {
+                        if (curr.getRight() == null) {
+                            curr.setData(curr.getLeft().getData());
+                            curr.setLeft(null);
+                        }
+                    }
+                }
+                updateHeightAndBF(curr);
+                curr = balance(curr);
+                return data;
+            }
+
+        }
+    }
+    private AVLNode<T> successor(AVLNode<T> curr){
+        // base case
+        if(curr.getLeft() == null)
+            return curr;
+        else
+            return successor(curr.getLeft());
+    }
 
     /**
      * Updates the height and balance factor of a node using its
@@ -134,4 +285,67 @@ public class AVL<T extends Comparable<? super T>> {
 
         return currentNode;
     }
+    /**
+     * Returns the root of the tree.
+     *
+     * For grading purposes only. You shouldn't need to use this method since
+     * you have direct access to the variable.
+     *
+     * @return The root of the tree.
+     */
+    public AVLNode<T> getRoot() {
+        // DO NOT MODIFY THIS METHOD!
+        return root;
+    }
+
+    /**
+     * Returns the size of the tree.
+     *
+     * For grading purposes only. You shouldn't need to use this method since
+     * you have direct access to the variable.
+     *
+     * @return The size of the tree.
+     */
+    public int size() {
+        // DO NOT MODIFY THIS METHOD!
+        return size;
+    }
+
+    /**
+     * Pre Order Traversal
+     */
+    public List<T> preorder(AVLNode<T> root) {
+        // C,L,R
+
+        List<T> returnVals = new ArrayList<T>();
+        if (baseCase(root) == true){
+            returnVals.add(root.getData());
+        }
+        else {
+            List<T> leftVals = new ArrayList<T>();
+            List<T> rightVals = new ArrayList<T>();
+            if(root.getLeft() != null){
+                leftVals = preorder(root.getLeft());
+            }
+            if(root.getRight() != null){
+                rightVals = preorder(root.getRight());
+            }
+
+            returnVals.add(root.getData());
+            returnVals.addAll(leftVals);
+            returnVals.addAll(rightVals);
+        }
+        return returnVals;
+    }
+    /**
+     * Base Case Helper Method
+     */
+    private boolean baseCase(AVLNode<T> root){
+        if(root != null){
+            if (root.getLeft() == null && root.getRight() == null)
+                return true;
+        }
+        return false;
+    }
+
 }
